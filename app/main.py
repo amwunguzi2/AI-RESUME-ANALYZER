@@ -1,3 +1,4 @@
+from ai_analyzer import analyze_resume_with_ai
 from resume_parser import extract_text_from_pdf
 from analyzer import (
     detect_sections,
@@ -127,3 +128,14 @@ print("Recommendations:")
 
 for recommendation in recommendations:
     print(f"- {recommendation}")
+
+print()
+print("=== AI ANALYSIS ===")
+print()
+
+ai_analysis = analyze_resume_with_ai(
+    resume_text,
+    job_text
+)
+
+print(ai_analysis)

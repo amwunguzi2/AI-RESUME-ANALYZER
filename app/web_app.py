@@ -2,6 +2,8 @@ import streamlit as st
 import tempfile
 
 from resume_parser import extract_text_from_pdf
+from ai_analyzer import analyze_resume_with_ai
+
 from analyzer import (
     extract_skills,
     compare_skills,
@@ -48,6 +50,8 @@ if st.button("Analyze"):
             temp_resume_path = temp_file.name
 
         resume_text = extract_text_from_pdf(temp_resume_path)
+        st.session_state["resume_text"] = resume_text
+        st.session_state["job_description"] = job_description
 
         resume_skills = extract_skills(resume_text)
         job_skills = extract_skills(job_description)
@@ -122,3 +126,27 @@ if st.button("Analyze"):
 
         for recommendation in recommendations:
             st.write(f"- {recommendation}")
+            
+if (
+    "resume_text" in st.session_state
+    and "job_description" in st.session_state
+):
+
+    st.divider()
+
+    st.header("AI-Powered Analysis")
+
+    st.write(
+        "Get a deeper analysis of your resume using Claude AI."
+    )
+
+    if st.button("Generate AI Analysis"):
+
+        with st.spinner("Claude is analyzing your resume..."):
+
+            ai_analysis = analyze_resume_with_ai(
+                st.session_state["resume_text"],
+                st.session_state["job_description"]
+            )
+
+        st.markdown(ai_analysis)

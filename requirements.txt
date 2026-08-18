@@ -1,2 +1,4 @@
 pypdf
 streamlit
+openai
+python-dotenv
