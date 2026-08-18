@@ -1,0 +1,9 @@
+Software Engineering Intern
+
+We are looking for a Software Engineering Intern to join our development team.
+
+The ideal candidate should have experience with Python, Java, SQL, Git, GitHub and Docker.
+
+Knowledge of AWS, Linux and React is considered an asset.
+
+The candidate should have strong communication and problem-solving skills.
