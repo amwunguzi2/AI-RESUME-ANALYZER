@@ -1,4 +1,5 @@
 import os
+import json
 
 from dotenv import load_dotenv
 from anthropic import Anthropic
@@ -55,3 +56,71 @@ JOB DESCRIPTION:
         if block.type == "text":
             text_parts.append(block.text)
             return "\n".join(text_parts)
+
+def extract_skills_with_ai(text):
+
+    prompt = f"""
+Analyze the following text and identify the professional and technical skills
+that are explicitly mentioned or clearly demonstrated.
+
+Include relevant:
+- Programming languages
+- Frameworks
+- Libraries
+- Databases
+- Cloud technologies
+- Developer tools
+- Operating systems
+- Data and analytics tools
+- Engineering technologies
+- Relevant professional skills
+
+Important rules:
+- Do not invent skills.
+- Only include skills supported by the text.
+- Do not include job titles.
+- Do not include company names.
+- Return ONLY a valid JSON array.
+- Do not include explanations.
+
+Example:
+["Python", "SQL", "Git", "Docker", "AWS"]
+
+TEXT:
+{text}
+"""
+
+    message = client.messages.create(
+        model="claude-sonnet-5",
+        max_tokens=1000,
+        messages=[
+            {
+                "role": "user",
+                "content": prompt
+            }
+        ]
+    )
+
+    text_parts = []
+
+    for block in message.content:
+        if block.type == "text":
+            text_parts.append(block.text)
+
+    response_text = "\n".join(text_parts).strip()
+    if response_text.startswith("```json"):
+        response_text = response_text.replace("```json", "", 1)
+    if response_text.endswith("```"):
+        response_text = response_text[:-3]
+    
+    response_text = response_text.strip()
+    try:
+        skills = json.loads(response_text)
+
+        if isinstance(skills, list):
+            return skills
+
+        return []
+
+    except json.JSONDecodeError:
+        return []

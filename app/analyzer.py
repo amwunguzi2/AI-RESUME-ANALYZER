@@ -286,3 +286,36 @@ def generate_recommendations(missing_skills, required_skills, preferred_skills):
         )
 
     return recommendations
+SKILL_ALIASES = {
+    "amazon web services": "aws",
+    "microsoft excel": "excel",
+    "ms excel": "excel",
+    "js": "javascript",
+    "git hub": "github",
+    "nodejs": "node.js",
+    "node js": "node.js",
+    "reactjs": "react",
+    "react js": "react",
+    "microsoft word": "word",
+    "ms word": "word",
+    "microsoft powerpoint": "powerpoint",
+    "ms powerpoint": "powerpoint"
+}
+
+
+def normalize_skill(skill):
+
+    skill = skill.lower().strip()
+
+    skill = skill.replace("-", " ")
+    skill = skill.replace("_", " ")
+
+    if skill.endswith(" skills"):
+        skill = skill[:-7]
+
+    skill = skill.strip()
+
+    if skill in SKILL_ALIASES:
+        skill = SKILL_ALIASES[skill]
+
+    return skill

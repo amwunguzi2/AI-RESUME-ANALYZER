@@ -1,4 +1,4 @@
-from ai_analyzer import analyze_resume_with_ai
+from ai_analyzer import analyze_resume_with_ai, extract_skills_with_ai
 from resume_parser import extract_text_from_pdf
 from analyzer import (
     detect_sections,
@@ -11,7 +11,8 @@ from analyzer import (
     calculate_category_score,
     calculate_final_score,
     get_match_verdict,
-    generate_recommendations
+    generate_recommendations,
+    normalize_skill
 )
 
 
@@ -139,3 +140,64 @@ ai_analysis = analyze_resume_with_ai(
 )
 
 print(ai_analysis)
+
+print()
+print("=== AI SKILL EXTRACTION ===")
+print()
+
+ai_resume_skills = extract_skills_with_ai(resume_text)
+ai_job_skills = extract_skills_with_ai(job_text)
+
+print("AI-detected resume skills:")
+
+for skill in ai_resume_skills:
+    print(f"- {skill}")
+print()
+print("AI-detected job skills:")
+
+for skill in ai_job_skills:
+    print(f"- {skill}")
+
+
+resume_skills_normalized = [
+    normalize_skill(skill)
+    for skill in ai_resume_skills
+]
+job_skills_normalized = [
+    normalize_skill(skill)
+    for skill in ai_job_skills
+]
+
+ai_matched_skills = []
+ai_missing_skills = []
+
+for skill in ai_job_skills:
+
+    if normalize_skill(skill) in resume_skills_normalized:
+        ai_matched_skills.append(skill)
+
+    else:
+        ai_missing_skills.append(skill)
+print()
+print("AI Matched Skills:")
+
+for skill in ai_matched_skills:
+    print(f"- {skill}")
+
+print()
+print("AI Missing Skills:")
+
+for skill in ai_missing_skills:
+    print(f"- {skill}")
+if len(ai_job_skills) > 0:
+
+    ai_match_score = (
+        len(ai_matched_skills)
+        / len(ai_job_skills)
+    ) * 100
+
+else:
+    ai_match_score = 0
+
+print()
+print(f"AI Skill Match Score: {round(ai_match_score, 1)}%")
